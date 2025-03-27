@@ -87,7 +87,7 @@ class _WeatherPageState extends State<WeatherPage> {
     return null;
   }
 
-  Future<void> _getWeather() async {
+  Future<void> _getWeatherByCity() async {
     setState(() {
       _isLoading = true;
       _weather = '';
@@ -103,17 +103,12 @@ class _WeatherPageState extends State<WeatherPage> {
     final apiKey = '2c578e426a2c4e4bb3f234043252603';
     String city = _cityController.text.trim();
 
-    if (city.isEmpty && _isLocationPermissionGranted) {
-      Position? position = await _getCurrentLocation();
-      if (position != null) {
-        city = '${position.latitude},${position.longitude}';
-      } else {
-        setState(() {
-          _isLoading = false;
-          _weather = 'Error al obtener la ubicación.';
-        });
-        return;
-      }
+    if (city.isEmpty) {
+      setState(() {
+        _isLoading = false;
+        _weather = 'Por favor, ingresa una ciudad.';
+      });
+      return;
     }
 
     final url = Uri.parse(
@@ -157,6 +152,69 @@ class _WeatherPageState extends State<WeatherPage> {
     }
   }
 
+  Future<void> _getWeatherByLocation() async {
+    setState(() {
+      _isLoading = true;
+      _weather = '';
+      _temperature = '';
+      _windSpeed = '';
+      _feelsLike = '';
+      _rainChance = '';
+      _humidity = '';
+      _backgroundColor = Colors.blue.shade100;
+      _weatherIconUrl = '';
+    });
+
+    Position? position = await _getCurrentLocation();
+    if (position != null) {
+      final apiKey = '2c578e426a2c4e4bb3f234043252603';
+      final url = Uri.parse(
+          'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=${position.latitude},${position.longitude}&aqi=no&lang=es');
+
+      try {
+        final response = await http.get(url);
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+
+          if (data['location'] != null && data['current'] != null) {
+            setState(() {
+              _isLoading = false;
+              _weather =
+              '${data['location']['name']}, ${data['location']['region']}, ${data['location']['country']} - ${data['current']['condition']['text']}';
+              _temperature = '${data['current']['temp_c']}°C';
+              _windSpeed = '${data['current']['wind_kph']} km/h';
+              _feelsLike = '${data['current']['feelslike_c']}°C';
+              _rainChance = '${data['current']['precip_mm']} mm';
+              _humidity = '${data['current']['humidity']}%';
+              _weatherIconUrl = 'https:${data['current']['condition']['icon']}';
+            });
+          } else {
+            setState(() {
+              _isLoading = false;
+              _weather = 'No se pudo obtener el clima en tu ubicación.';
+            });
+          }
+        } else {
+          setState(() {
+            _isLoading = false;
+            _weather = 'Error: ${response.reasonPhrase}';
+          });
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+          _weather = 'Fallo al obtener los datos del clima. Error: $e';
+        });
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+        _weather = 'Error al obtener la ubicación.';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,8 +240,13 @@ class _WeatherPageState extends State<WeatherPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _getWeather,
-              child: const Text('Obtener clima'),
+              onPressed: _getWeatherByCity,
+              child: const Text('Obtener clima por ciudad'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _getWeatherByLocation,
+              child: const Text('Obtener clima en tu ubicación'),
             ),
             const SizedBox(height: 30),
             _isLoading
