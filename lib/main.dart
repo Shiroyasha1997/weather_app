@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,7 +42,7 @@ class _WeatherPageState extends State<WeatherPage> {
   String _weatherIconUrl = '';
   bool _isLoading = false;
   bool _isLocationPermissionGranted = false;
-  Color _backgroundColor = Colors.blue;
+  Color _backgroundColor = Colors.blue.shade100;
 
   @override
   void initState() {
@@ -97,7 +96,7 @@ class _WeatherPageState extends State<WeatherPage> {
       _feelsLike = '';
       _rainChance = '';
       _humidity = '';
-      _backgroundColor = Colors.blue;
+      _backgroundColor = Colors.blue.shade100;
       _weatherIconUrl = '';
     });
 
@@ -125,7 +124,6 @@ class _WeatherPageState extends State<WeatherPage> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);
 
         if (data['location'] != null && data['current'] != null) {
           setState(() {
@@ -167,73 +165,79 @@ class _WeatherPageState extends State<WeatherPage> {
       ),
       body: Container(
         color: _backgroundColor,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _cityController,
               decoration: const InputDecoration(
-                labelText: 'Ingresa el nombre de la ciudad',
+                labelText: 'Ingresa la ciudad',
                 filled: true,
                 fillColor: Colors.white,
+                border: OutlineInputBorder(),
               ),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _getWeather,
               child: const Text('Obtener clima'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             _isLoading
                 ? const CircularProgressIndicator()
                 : Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _weatherIconUrl.isEmpty
-                        ? const CircularProgressIndicator()
-                        : Image.network(
-                      _weatherIconUrl,
-                      width: 50,
-                      height: 50,
-                    ),
-                    const SizedBox(width: 20),
-                    Text(
-                      _temperature,
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                _weatherIconUrl.isEmpty
+                    ? const SizedBox.shrink()
+                    : Image.network(
+                  _weatherIconUrl,
+                  width: 80,
+                  height: 80,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
+                Text(
+                  _temperature,
+                  style: const TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 15),
                 Text(
                   _weather,
-                  style: const TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 20, color: Colors.black54),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  '🌡️ Sensación térmica: $_feelsLike',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(
-                  '💨 Velocidad del viento: $_windSpeed',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(
-                  '🌧️ Probabilidad de lluvia: $_rainChance',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(
-                  '💧 Humedad: $_humidity',
-                  style: const TextStyle(fontSize: 18),
-                ),
+                const SizedBox(height: 30),
+                _weatherDetails(),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _weatherDetails() {
+    return Column(
+      children: [
+        _buildDetailRow('🌡️ Sensación térmica:', _feelsLike),
+        _buildDetailRow('💨 Velocidad del viento:', _windSpeed),
+        _buildDetailRow('🌧️ Probabilidad de lluvia:', _rainChance),
+        _buildDetailRow('💧 Humedad:', _humidity),
+      ],
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Text(
+        '$label $value',
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
