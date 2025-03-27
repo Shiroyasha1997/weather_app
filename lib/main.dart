@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.light,
-        fontFamily: 'Roboto', // Usamos la fuente Roboto
+        fontFamily: 'Roboto',
       ),
       home: const WeatherPage(),
     );
@@ -38,9 +38,8 @@ class _WeatherPageState extends State<WeatherPage> {
   String _temperature = '';
   String _windSpeed = '';
   String _feelsLike = '';
-  String _sunrise = '';
-  String _sunset = '';
   String _rainChance = '';
+  String _humidity = '';
   String _weatherIconUrl = '';
   bool _isLoading = false;
   bool _isLocationPermissionGranted = false;
@@ -96,18 +95,16 @@ class _WeatherPageState extends State<WeatherPage> {
       _temperature = '';
       _windSpeed = '';
       _feelsLike = '';
-      _sunrise = '';
-      _sunset = '';
       _rainChance = '';
-      _backgroundColor = Colors.blue; // Resetear el fondo por defecto
-      _weatherIconUrl = ''; // Resetear el ícono
+      _humidity = '';
+      _backgroundColor = Colors.blue;
+      _weatherIconUrl = '';
     });
 
-    final apiKey = '2c578e426a2c4e4bb3f234043252603'; // 🔥 Reemplaza con tu API Key
+    final apiKey = '2c578e426a2c4e4bb3f234043252603';
     String city = _cityController.text.trim();
 
     if (city.isEmpty && _isLocationPermissionGranted) {
-      // Si no se proporciona una ciudad, obtenemos la ubicación actual
       Position? position = await _getCurrentLocation();
       if (position != null) {
         city = '${position.latitude},${position.longitude}';
@@ -121,37 +118,25 @@ class _WeatherPageState extends State<WeatherPage> {
     }
 
     final url = Uri.parse(
-        'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$city&aqi=no&lang=es'); // Cambié lang=es para obtener en español
+        'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$city&aqi=no&lang=es');
 
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);  // Imprime la respuesta completa para verificar los datos
+        print(data);
 
         if (data['location'] != null && data['current'] != null) {
           setState(() {
             _isLoading = false;
-
-            // Asignamos los nuevos valores
-            _weather = '${data['location']['name']}, ${data['location']['region']}, ${data['location']['country']} - ${data['current']['condition']['text']}';
+            _weather =
+            '${data['location']['name']}, ${data['location']['region']}, ${data['location']['country']} - ${data['current']['condition']['text']}';
             _temperature = '${data['current']['temp_c']}°C';
             _windSpeed = '${data['current']['wind_kph']} km/h';
             _feelsLike = '${data['current']['feelslike_c']}°C';
-
-            // Verificar si la clave 'astro' existe antes de acceder a 'sunrise' y 'sunset'
-            if (data['current']['astro'] != null) {
-              _sunrise = data['current']['astro']['sunrise'] ?? 'Desconocido';
-              _sunset = data['current']['astro']['sunset'] ?? 'Desconocido';
-            } else {
-              _sunrise = 'No disponible';
-              _sunset = 'No disponible';
-            }
-
             _rainChance = '${data['current']['precip_mm']} mm';
-
-            // Asignamos el ícono
+            _humidity = '${data['current']['humidity']}%';
             _weatherIconUrl = 'https:${data['current']['condition']['icon']}';
           });
         } else {
@@ -238,15 +223,11 @@ class _WeatherPageState extends State<WeatherPage> {
                   style: const TextStyle(fontSize: 18),
                 ),
                 Text(
-                  '🌅 Amanecer: $_sunrise',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(
-                  '🌇 Atardecer: $_sunset',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(
                   '🌧️ Probabilidad de lluvia: $_rainChance',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  '💧 Humedad: $_humidity',
                   style: const TextStyle(fontSize: 18),
                 ),
               ],
