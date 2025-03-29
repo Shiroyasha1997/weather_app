@@ -152,7 +152,7 @@ class _WeatherPageState extends State<WeatherPage> {
         if (e is http.ClientException) {
           _weather = 'No tienes conexión a Internet. Verifica tu conexión y vuelve a intentarlo.';
         } else {
-          _weather = 'Fallo al obtener los datos del clima. Error: $e. Intenta nuevamente.';
+          _weather = 'Fallo al obtener los datos del clima. Intenta nuevamente.';
         }
       });
     }
@@ -225,7 +225,7 @@ class _WeatherPageState extends State<WeatherPage> {
           'No tienes conexión a Internet. Verifica tu conexión y vuelve a intentarlo.';
         } else {
           _weather =
-          'Fallo al obtener los datos del clima. Error: $e. Intenta nuevamente.';
+          'Fallo al obtener los datos del clima. Intenta nuevamente.';
         }
       });
     }
@@ -308,13 +308,18 @@ class _WeatherPageState extends State<WeatherPage> {
             ElevatedButton(
               onPressed: _getWeatherByLocation,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30), backgroundColor: Colors.blue.shade600,
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                backgroundColor: Colors.blue.shade600,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: const Text('Obtener clima en tu ubicación', style: TextStyle(fontSize: 16)),
+              child: const Text(
+                'Obtener clima en tu ubicación',
+                style: TextStyle(fontSize: 16, color: Colors.white), // Texto en blanco
+              ),
             ),
+
             const SizedBox(height: 30),
             if (_isLoading)
               const CircularProgressIndicator()
