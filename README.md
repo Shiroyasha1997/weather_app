@@ -1,16 +1,44 @@
-# weather_app
+# 🌦 Weather App
 
-A weather app
+## 📌 Descripción
+**Weather App** es una aplicación móvil desarrollada en **Flutter** que permite a los usuarios obtener información meteorológica en tiempo real de cualquier ciudad o de su ubicación actual.
 
-## Getting Started
+## 🎯 Funcionalidades
+✅ Buscar el clima por nombre de ciudad.  
+✅ Obtener el clima en tiempo real según la ubicación del usuario.  
+✅ Mostrar temperatura, humedad, sensación térmica, velocidad del viento y probabilidad de lluvia.  
+✅ Sugerencias de ciudades al escribir en el buscador.  
+✅ Interfaz limpia y amigable con diseño moderno.
 
-This project is a starting point for a Flutter application.
+## 🛠 Tecnologías Utilizadas
+- **Flutter** (Dart)
+- **WeatherAPI** (para obtener datos meteorológicos)
+- **Geolocator** (para obtener la ubicación del usuario)
+- **HTTP** (para hacer peticiones a la API)
 
-A few resources to get you started if this is your first Flutter project:
+## 📦 Instalación y Configuración
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 1️⃣ Clona el repositorio
+```sh
+git clone https://github.com/Shiroyasha1997/weather_app.git
+cd weather_app
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 2️⃣ Instala las dependencias
+```sh
+flutter pub get
+```
+
+### 3️⃣ Ejecuta la aplicación
+```sh
+flutter run
+```
+
+### 💡 Asegúrate de que tu emulador o dispositivo esté conectado.
+
+## 🔑 Configuración de API
+
+### Para que la app funcione correctamente, necesitas una clave de API de WeatherAPI. Luego, agrégala en el archivo main.dart:
+```sh
+final apiKey = 'TU_API_KEY_AQUI';
+```
