@@ -44,7 +44,6 @@ class _WeatherPageState extends State<WeatherPage> {
   String _weatherIconUrl = '';
   bool _isLoading = false;
   bool _isLocationPermissionGranted = false;
-  Color _backgroundColor = Colors.blue.shade100;
   List<String> _suggestedCities = [];
   bool _showSuggestions = false;
 
@@ -246,28 +245,36 @@ class _WeatherPageState extends State<WeatherPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weather App'),
+        title: const Text('Weather App', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.blue.shade600,
       ),
-      body: Container(
-        color: _backgroundColor,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _cityController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Ingresa la ciudad',
                 filled: true,
                 fillColor: Colors.white,
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.blue.shade300),
+                ),
               ),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18),
             ),
             if (_showSuggestions)
               Container(
+                margin: const EdgeInsets.only(top: 10),
                 height: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                ),
                 child: ListView.builder(
                   itemCount: _suggestedCities.length,
                   itemBuilder: (context, index) {
@@ -286,23 +293,30 @@ class _WeatherPageState extends State<WeatherPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _getWeatherByLocation,
-              child: const Text('Obtener clima en tu ubicación'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30), backgroundColor: Colors.blue.shade600,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: const Text('Obtener clima en tu ubicación', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(height: 30),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : Column(
-              children: [
-                if (_weatherIconUrl.isNotEmpty)
-                  Image.network(_weatherIconUrl, width: 80, height: 80),
-                const SizedBox(height: 15),
-                Text(_temperature, style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 15),
-                Text(_weather, style: const TextStyle(fontSize: 20, color: Colors.black54), textAlign: TextAlign.center),
-                const SizedBox(height: 30),
-                _weatherDetails(),
-              ],
-            ),
+            if (_isLoading)
+              const CircularProgressIndicator()
+            else
+              Column(
+                children: [
+                  if (_weatherIconUrl.isNotEmpty)
+                    Image.network(_weatherIconUrl, width: 80, height: 80),
+                  const SizedBox(height: 15),
+                  Text(_temperature, style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 15),
+                  Text(_weather, style: const TextStyle(fontSize: 20, color: Colors.black54), textAlign: TextAlign.center),
+                  const SizedBox(height: 30),
+                  _weatherDetails(),
+                ],
+              ),
           ],
         ),
       ),
@@ -321,6 +335,9 @@ class _WeatherPageState extends State<WeatherPage> {
   }
 
   Widget _buildDetailRow(String label, String value) {
-    return Padding(padding: const EdgeInsets.symmetric(vertical: 5), child: Text('$label $value', style: const TextStyle(fontSize: 18)));
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Text('$label $value', style: const TextStyle(fontSize: 18)),
+    );
   }
 }
