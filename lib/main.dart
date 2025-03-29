@@ -142,13 +142,18 @@ class _WeatherPageState extends State<WeatherPage> {
       } else {
         setState(() {
           _isLoading = false;
-          _weather = 'Error: ${response.reasonPhrase}';
+          _weather = 'Error: ${response.reasonPhrase}. Intenta nuevamente más tarde.';
         });
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _weather = 'Fallo al obtener los datos del clima. Error: $e';
+        // Verificamos si el error fue por falta de acceso a la red.
+        if (e is http.ClientException) {
+          _weather = 'No tienes conexión a Internet. Verifica tu conexión y vuelve a intentarlo.';
+        } else {
+          _weather = 'Fallo al obtener los datos del clima. Error: $e. Intenta nuevamente.';
+        }
       });
     }
   }
@@ -195,7 +200,8 @@ class _WeatherPageState extends State<WeatherPage> {
 
     final apiKey = '2c578e426a2c4e4bb3f234043252603';
     final url = Uri.parse(
-        'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=${position.latitude},${position.longitude}&aqi=no&lang=es');
+        'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=${position
+            .latitude},${position.longitude}&aqi=no&lang=es');
 
     try {
       final response = await http.get(url);
@@ -206,13 +212,21 @@ class _WeatherPageState extends State<WeatherPage> {
       } else {
         setState(() {
           _isLoading = false;
-          _weather = 'Error: ${response.reasonPhrase}';
+          _weather =
+          'Error: ${response.reasonPhrase}. Intenta nuevamente más tarde.';
         });
       }
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _weather = 'Fallo al obtener los datos del clima. Error: $e';
+        // Verificamos si el error fue por falta de acceso a la red.
+        if (e is http.ClientException) {
+          _weather =
+          'No tienes conexión a Internet. Verifica tu conexión y vuelve a intentarlo.';
+        } else {
+          _weather =
+          'Fallo al obtener los datos del clima. Error: $e. Intenta nuevamente.';
+        }
       });
     }
   }
