@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
+import 'weather_service.dart';  // Asegúrate de importar el archivo donde tienes la clase WeatherService
 
 void main() {
   runApp(const MyApp());
@@ -46,6 +47,7 @@ class _WeatherPageState extends State<WeatherPage> {
   bool _isLocationPermissionGranted = false;
   List<String> _suggestedCities = [];
   bool _showSuggestions = false;
+  final WeatherService _weatherService = WeatherService(http.Client());  // Instancia de WeatherService
 
   @override
   void initState() {
@@ -119,32 +121,14 @@ class _WeatherPageState extends State<WeatherPage> {
       _resetWeatherData();
     });
 
-    final apiKey = '2c578e426a2c4e4bb3f234043252603';
-    String cityName = city.trim();
+    try {
+      final weatherData = await _weatherService.getWeather(city);
 
-    if (cityName.isEmpty) {
       setState(() {
         _isLoading = false;
-        _weather = 'Por favor, ingresa una ciudad.';
+        _temperature = '${weatherData['temperature']}°C';
+        _weather = weatherData['condition'];
       });
-      return;
-    }
-
-    final url = Uri.parse(
-        'https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$cityName&aqi=no&lang=es');
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        _updateWeatherData(data);
-      } else {
-        setState(() {
-          _isLoading = false;
-          _weather = 'Error: ${response.reasonPhrase}';
-        });
-      }
     } catch (e) {
       setState(() {
         _isLoading = false;
