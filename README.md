@@ -38,7 +38,38 @@ flutter run
 
 ## 🔑 Configuración de API
 
-### Para que la app funcione correctamente, necesitas una clave de API de WeatherAPI. Luego, agrégala en el archivo main.dart:
+Para que la app funcione correctamente, necesitas una clave de API de WeatherAPI. Luego, agrégala en el archivo main.dart:
 ```sh
 final apiKey = 'TU_API_KEY_AQUI';
 ```
+
+## 📦 Generación de Artefactos Móviles
+
+Para generar los binarios necesarios para Android e iOS, sigue los siguientes pasos. Asegúrate de que tu entorno de desarrollo esté correctamente configurado para Flutter y las herramientas necesarias para Android e iOS.
+
+### 🚀 Generación del APK o AAB para Android
+
+### 1️⃣ Prepara el entorno para Android
+Asegúrate de tener Android Studio y las herramientas de línea de comandos de Android configuradas. Si no lo has hecho, instala las herramientas de desarrollo de Android.
+
+### 2️⃣ Genera el APK o AAB
+Para generar el archivo APK o AAB, sigue los siguientes pasos:
+
+### Para APK (archivo instalable): Ejecuta el siguiente comando en la terminal:
+
+```sh
+flutter build apk --release
+```
+
+Este comando generará un archivo APK en la carpeta build/app/outputs/flutter-apk/app-release.apk.
+
+### Para AAB (Android App Bundle): Si prefieres generar un archivo AAB (recomendado para distribuir en Google Play Store), ejecuta:
+
+```sh
+flutter build appbundle --release
+```
+
+Este comando generará un archivo AAB en la carpeta build/app/outputs/bundle/release/app-release.aab.
+
+## 📌 Nota sobre los archivos binarios
+Recuerda que para realizar la distribución en Google Play Store o App Store, necesitarás configurar adecuadamente las claves de firma y las credenciales de cada plataforma. Asegúrate de tener configuradas las claves en los archivos de configuración de Android (build.gradle) e iOS (Runner.xcodeproj o Runner.xcworkspace).
