@@ -73,3 +73,7 @@ Este comando generará un archivo AAB en la carpeta build/app/outputs/bundle/rel
 
 ## 📌 Nota sobre los archivos binarios
 Recuerda que para realizar la distribución en Google Play Store o App Store, necesitarás configurar adecuadamente las claves de firma y las credenciales de cada plataforma. Asegúrate de tener configuradas las claves en los archivos de configuración de Android (build.gradle) e iOS (Runner.xcodeproj o Runner.xcworkspace).
+
+## Autor
+### Diego Valenzuela
+### valenzueladiego1997@gmail.com
